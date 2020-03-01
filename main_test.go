@@ -1,7 +1,6 @@
 package main
 
 import (
-	"path/filepath"
 	"testing"
 	"time"
 )
@@ -31,20 +30,16 @@ func TestArgs_Validate(t *testing.T) {
 
 }
 
-func TestMakeFilePath(t *testing.T) {
+func TestMakeBasePath(t *testing.T) {
 	jst, _ := time.LoadLocation("Asia/Tokyo")
 	name := "testfile"
 	date := time.Date(2020, time.January, 1, 0, 0, 0, 0, jst)
-	expect, _ := filepath.Abs("data/1577804400_testfile")
+	expect := "1577804400_testfile"
 
-	got, err := MakeFilePath(name, date)
-	if err != nil {
-		t.Errorf("filepath comvert failed.\nname: %s date: %s\nerror: %s", name, date, err)
-	}
+	got := MakeBasePath(name, date)
 	if got != expect {
 		t.Errorf("invalid value.\nexpect: %s\nactual: %s", expect, got)
 	}
-
 }
 
 func isCausedErrors(t *testing.T, err error) bool {

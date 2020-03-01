@@ -30,13 +30,18 @@ func main() {
 		return
 	}
 
-	time := time.Now()
-	min := time.Local().Unix() / 60
-
-	file, err := os.Create(fmt.Sprintf("data/%d_%s", min, args.Name))
+	t := time.Now().Local()
+	b := MakeBasePath(args.Name, t)
+	p := filepath.Join("data", b)
+	abs, err := filepath.Abs(p)
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println("in os.Create()")
+		return
+	}
+
+	file, err := os.Create(abs)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	defer file.Close()
@@ -84,16 +89,11 @@ func parseFlags() (Args, error) {
 	return a, nil
 }
 
-// MakeFilePath return absolute path using specified args.
-// baseURL format: <unix seconds>_<name>
-func MakeFilePath(name string, date time.Time) (string, error) {
+// MakeBasePath return absolute base path using specified args.
+// basePath format: <unix seconds>_<name>
+func MakeBasePath(name string, date time.Time) string {
 	min := date.Unix()
-	rel := fmt.Sprintf("data/%d_%s", min, name)
+	path := fmt.Sprintf("%d_%s", min, name)
 
-	abs, err := filepath.Abs(rel)
-	if err != nil {
-		return "", err
-	}
-
-	return abs, nil
+	return path
 }
