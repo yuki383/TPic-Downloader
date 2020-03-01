@@ -11,8 +11,19 @@ import (
 	"time"
 )
 
+// Args has parsed command-line arguments.
+type Args struct {
+	Name string
+	URL  string
+}
+
 func main() {
-	args, err := parseFlags()
+	flag.Parse()
+	args := Args{
+		Name: flag.Arg(0),
+		URL:  flag.Arg(1),
+	}
+	err := args.Validate()
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -55,12 +66,6 @@ func main() {
 	fmt.Printf("save successed bytes: %d\n", i)
 }
 
-// Args has parsed command-line arguments.
-type Args struct {
-	Name string
-	URL  string
-}
-
 // Validate returns Args has expected value.
 func (a Args) Validate() error {
 	if a.URL == "" {
@@ -71,22 +76,6 @@ func (a Args) Validate() error {
 	}
 
 	return nil
-}
-
-func parseFlags() (Args, error) {
-	flag.Parse()
-
-	a := Args{
-		Name: flag.Arg(0),
-		URL:  flag.Arg(1),
-	}
-
-	err := a.Validate()
-	if err != nil {
-		return Args{}, err
-	}
-
-	return a, nil
 }
 
 // MakeBasePath return absolute base path using specified args.
