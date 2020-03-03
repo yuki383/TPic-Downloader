@@ -1,29 +1,18 @@
 package main
 
 import (
-	"errors"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+
+	"tpic-fetcher/pkg/arguments"
 )
 
-// Args has parsed command-line arguments.
-type Args struct {
-	Name string
-	URL  string
-}
-
 func main() {
-	flag.Parse()
-	args := Args{
-		Name: flag.Arg(0),
-		URL:  flag.Arg(1),
-	}
-	err := args.Validate()
+	args, err := arguments.ParseFlags()
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -35,6 +24,7 @@ func main() {
 		return
 	}
 
+	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -64,18 +54,6 @@ func main() {
 	}
 
 	fmt.Printf("save successed bytes: %d\n", i)
-}
-
-// Validate returns Args has expected value.
-func (a Args) Validate() error {
-	if a.URL == "" {
-		return errors.New("param url is required")
-	}
-	if a.Name == "" {
-		return errors.New("param name is required")
-	}
-
-	return nil
 }
 
 // MakeBasePath return absolute base path using specified args.
