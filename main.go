@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"tpic-fetcher/pkg/arguments"
+	"tpic-fetcher/pkg/files"
 	"tpic-fetcher/pkg/pictures"
 )
 
@@ -22,25 +21,11 @@ func main() {
 		return
 	}
 
-	p := filepath.Join("data", pics.Name)
-	abs, err := filepath.Abs(p)
+	size, err := files.New("data", pics.Name, pics.Data)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	file, err := os.Create(abs)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer file.Close()
-
-	i, err := file.Write(pics.Data)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Printf("save successed bytes: %d\n", i)
+	fmt.Printf("save successed bytes: %d\n", size)
 }
