@@ -2,13 +2,11 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"tpic-fetcher/pkg/arguments"
+	"tpic-fetcher/pkg/pictures"
 )
 
 func main() {
@@ -18,22 +16,13 @@ func main() {
 		return
 	}
 
-	res, err := http.Get(args.URL)
+	pics, err := pictures.New(args.Name, args.URL)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	t := time.Now().Local()
-	b := MakeBasePath(args.Name, t)
-	p := filepath.Join("data", b)
+	p := filepath.Join("data", pics.Name)
 	abs, err := filepath.Abs(p)
 	if err != nil {
 		fmt.Println(err)
@@ -47,20 +36,11 @@ func main() {
 	}
 	defer file.Close()
 
-	i, err := file.Write(body)
+	i, err := file.Write(pics.Data)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	fmt.Printf("save successed bytes: %d\n", i)
-}
-
-// MakeBasePath return absolute base path using specified args.
-// basePath format: <unix seconds>_<name>
-func MakeBasePath(name string, date time.Time) string {
-	min := date.Unix()
-	path := fmt.Sprintf("%d_%s", min, name)
-
-	return path
 }
