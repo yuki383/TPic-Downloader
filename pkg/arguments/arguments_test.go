@@ -5,26 +5,34 @@ import (
 	"testing"
 )
 
-func TestArgs_Validate(t *testing.T) {
+func TestArgs(t *testing.T) {
+	t.Run("Validate", testValidate)
+}
+
+func testValidate(t *testing.T) {
 	cases := []struct {
-		name string
-		url  string
-		want bool
+		name   string
+		url    string
+		format string
+		size   string
+		want   bool
 	}{
-		{name: "testName", url: "https://www.google.com/", want: false},
+		{name: "testName", url: "https://www.google.com/", format: "png", size: "large", want: false},
 		{name: "", url: "https://www.google.com/", want: true},
 		{name: "testName", url: "", want: true},
 	}
 
 	for _, c := range cases {
 		a := Args{
-			Name: c.name,
-			URL:  c.url,
+			Name:   c.name,
+			URL:    c.url,
+			Format: c.format,
+			Size:   c.size,
 		}
 		got := a.Validate()
 		isError := isCausedErrors(t, got)
 		if isError != c.want {
-			t.Errorf("invalid result.\ntest case: %#v \nerror expected: %#v \nactual: %#v ", c, c.want, isError)
+			t.Errorf("invalid result.\n%s\ntest case: %#v \nerror expected: %#v \nactual: %#v ", got, c, c.want, isError)
 		}
 	}
 
