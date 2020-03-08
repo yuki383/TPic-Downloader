@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	path = flag.String("p", "data", "install path of fetched image.")
+	path   = flag.String("p", "data", "install path of fetched image.")
 	format = flag.String("f", "jpg", "specify image extension.\ndefault: jpg\naccept: jpg or png")
-	size = flag.String("s", "large", "specify image size.\ndefault: large\naccept: small, midium, large, thumb")
+	size   = flag.String("s", "large", "specify image size.\ndefault: large\naccept: small, midium, large, thumb")
 )
 
 // func init() {
@@ -22,9 +22,9 @@ type Args struct {
 	Name string
 	URL  string
 
-	Path string
+	Path   string
 	Format string
-	Size string
+	Size   string
 }
 
 // Validate returns Args has expected value.
@@ -48,7 +48,7 @@ func (a Args) Validate() error {
 }
 
 func sizeValidate(size string) bool {
-	sizes := []string{ "small", "midium", "large", "thumb" }
+	sizes := []string{"small", "midium", "large", "thumb"}
 	for _, s := range sizes {
 		if size == s {
 			return true
@@ -78,11 +78,11 @@ func parseFlags(parser Parser) (Args, error) {
 	}
 
 	args := Args{
-		Name: parser.Arg(0),
-		URL:  parser.Arg(1),
-		Path: *path,
+		Name:   parser.Arg(0),
+		URL:    parser.Arg(1),
+		Path:   *path,
 		Format: *format,
-		Size: *size,
+		Size:   *size,
 	}
 
 	err = args.Validate()

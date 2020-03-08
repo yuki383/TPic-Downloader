@@ -35,9 +35,9 @@ func setName(name string, extend string) (string, error) {
 }
 
 func do() error {
-		args, err := arguments.ParseFlags()
+	args, err := arguments.ParseFlags()
 	if err != nil {
-	return err
+		return err
 	}
 
 	url := setURL(args.URL, args.Format, args.Size)
@@ -54,7 +54,7 @@ func do() error {
 
 	s, err := files.New(args.Path, name, pics.Data)
 	if err != nil {
-			return err
+		return err
 	}
 
 	fmt.Printf("write success! size: %v", s)
